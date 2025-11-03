@@ -4,7 +4,7 @@
 #
 # [49] 字母异位词分组
 #
-
+# import collections
 
 # @lcpr-template-start
 
@@ -12,7 +12,20 @@
 # @lc code=start
 class Solution:
     def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        
+        # hashTable = collections.defaultdict(list)
+        # for s in strs:
+        #     key = ''.join(sorted(s))
+        #     hashTable[key].append(s)
+        # return list(hashTable.values())
+        hashTable = dict()
+        for s in strs:
+            key =''.join(sorted(s))
+            if key in hashTable:
+                hashTable[key].append(s)
+            else:
+                hashTable[key] = [s]
+        return list(hashTable.values())
+
 # @lc code=end
 
 
