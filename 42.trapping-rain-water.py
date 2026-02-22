@@ -7,44 +7,51 @@
 
 
 # @lcpr-template-start
-from typing import List
+
 # @lcpr-template-end
 # @lc code=start
 class Solution:
     def trap(self, height: List[int]) -> int:
-        # 使用双指针法，达到 O(n) 时间复杂度和 O(1) 空间复杂度
-        if not height:
-            return 0
-
+        # 解法一：暴力求解(time limit)：
+        # n = len(height)
+        # total = 0
+        # for i in range(n):
+        #     leftMax = 0
+        #     rightMax = 0
+        #     for j in range(i):
+        #         leftMax = max(leftMax,height[j])
+        #     for k in range(i + 1,n):
+        #         rightMax = max(rightMax,height[k])
+        #     total += max(min(leftMax,rightMax) - height[i],0)
+        # return total
+        # 解法二：动态规划：
+        # 解法三：双指针法(理解双指针法：1、对于左指针，leftMax一定是其左边的最大值，但是rightMax不一定是其右边的最大值；2、对于右指针，rightMax一定是其右边的最大值，但是leftMax不一定是其左边的最大值)：
         n = len(height)
-        left, right = 0, n - 1
-        
-        # left_max: 从左边到 left 指针的最高柱子
-        # right_max: 从右边到 right 指针的最高柱子
-        left_max, right_max = 0, 0
-        
-        total_water = 0
-
+        left = 0
+        right = n - 1
+        leftMax = 0
+        rightMax = 0
+        total = 0
         while left < right:
-            # 核心逻辑：处理较矮的一边
-            if height[left] < height[right]:
-                # 如果左边的柱子比 left_max 矮，说明可以蓄水
-                if height[left] >= left_max:
-                    left_max = height[left]
-                else:
-                    total_water += left_max - height[left]
-                # 移动左指针
+            if height[left] <= height[right]:
+                # 为什么要保证始终都在处理较矮的指针？
+                # 含义：这时对于左指针来说，leftmax一定是其左边的最大值，rightmax<=其右边的最大值
+                total += max(leftMax - height[left],0) 
+                leftMax = max(leftMax,height[left])
                 left += 1
+                
             else:
-                # 如果右边的柱子比 right_max 矮，说明可以蓄水
-                if height[right] >= right_max:
-                    right_max = height[right]
-                else:
-                    total_water += right_max - height[right]
-                # 移动右指针
+                # 含义，这是对于右指针来说，rightmax一定是其右边的最大值，leftmax<=其左边的最大值
+                total += max(rightMax - height[right],0)
+                rightMax = max(rightMax,height[right])
                 right -= 1
-        
-        return total_water
+                
+        return total
+
+
+
+
+
 
 # @lc code=end
 
@@ -56,7 +63,8 @@ class Solution:
 # @lcpr case=end
 
 # @lcpr case=start
-# [42000,0,40000]\n
+# [4,2,0,3,2,5]\n
 # @lcpr case=end
 
 #
+
