@@ -68,9 +68,43 @@
 #         self.val = val
 #         self.left = left
 #         self.right = right
+from typing import AnyStr
+import collections
+
 class Solution:
     def widthOfBinaryTree(self, root: Optional[TreeNode]) -> int:
-        
+        # 本题实际上还是使用二叉树的层序遍历进行解题，但是因为徐亚比较得到最大宽度，
+        # 所以在FIFO队列中进行节点存储时，需要同时存储一个节点在满二叉树中的索引值；
+        # 边界处理：
+        if not root:
+            return 0
+        # 使用FIFO队列进行二叉树层序遍历：
+        q = collections.deque([(root, 1)])
+        ans = 0
+        # 队列不为空时，就一层一层进行处理（计算宽度）：
+        while q:
+            # 当前层的节点个数：
+            sz = len(q)
+            left = 0
+            right = 0
+            for i in range(sz):
+                # pop第一个节点：
+                cur_node, cur_idx = q.popleft()
+                # 处理第一个节点的左右孩子：
+                if cur_node.left:
+                    q.append((cur_node.left, 2 * cur_idx))
+                if cur_node.right:
+                    q.append((cur_node.right, 2 * cur_idx + 1))
+                # 记录第一个节点以及最后一个节点的索引值：
+                if i == 0:
+                    left = cur_idx
+                if i == sz - 1:
+                    right = cur_idx
+            # 计算宽度,更新结果：
+            ans = max(ans, right - left + 1)
+
+        # 返回：
+        return ans
 # @lc code=end
 
 
